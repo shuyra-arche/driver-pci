@@ -1,0 +1,61 @@
+schema = 1
+id = "pci"
+
+[loader]
+image = "pci"
+space = "supervisor"
+args = []
+stack = 0
+
+# The runtime consumes these capabilities at indices 0 (effects) and 1 (config).
+[[operator.namespace]]
+key = "service"
+placement = "shared"
+path = "pci"
+scope = { names = ["entry"] }
+ops = 4 # BIND
+permit = "public"
+source_mark = "9763088204936501036" # pci_declaration::marks::ENTRY
+bindings = []
+
+[[operator.namespace]]
+key = "service"
+placement = "shared"
+path = "pci"
+scope = { names = ["config"] }
+ops = 4 # BIND
+permit = "public"
+source_mark = "17042179412128861606" # pci_declaration::marks::CONFIG
+bindings = []
+
+[identity]
+aliases = []
+grants = []
+
+[control]
+creation = "startup"
+# System completes Operator/Identity bootstrap before ordinary Units start.
+requires = ["hub"]
+after = ["hub"]
+ready = { signal = "9887014109901452468" } # unit::READY_MARK
+ending = "resident"
+construction = []
+groups = []
+guarded = false
+
+[[control.retirement]]
+provider = "hub"
+namespace = 0
+face = "retire"
+
+[[supply.bindings]]
+source = "system/initrd"
+resource = "platform/ecam"
+slot = "14122325008593393598" # pci_declaration::bindings::ECAM_BINDING.slot
+permission = 1 # FETCH; System retains the exact MMIO window subset.
+
+[[supply.bindings]]
+source = "system/initrd"
+resource = "platform/aperture"
+slot = "124390766869545976" # pci_declaration::bindings::APERTURE_BINDING.slot
+permission = 1 # FETCH; System retains the exact MMIO window subset.

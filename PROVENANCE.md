@@ -195,3 +195,32 @@ checks validate bounded pagination, exact snapshots and partial ECAM tails.
 They are new focused checks, not a port of the old suite or scenes. RV64 release
 compilation and host checks do not prove hardware effects, DMA/retirement
 behavior, or integration into a product. No QEMU/SMP, merge or archive is claimed.
+
+## Vanllia Unit intake
+
+The existing runtime checkpoint `bc0da12a1bafbf684179301853b5709a1ddfeaf9`
+remains the starting point. This follow-up adds the provider-owned `unit.toml`
+for Vanllia's dynamic Unit catalog. The document retains PROGRAM's supervisor
+loader, ordered `entry`/`config` namespace capabilities, READY mark, resident
+ending, Hub retirement receipt and exact ECAM/aperture supply bindings.
+Operator/Identity bootstrap dependencies are completed inside System; the
+ordinary Unit closure explicitly requires and orders Hub.
+
+Runtime, wire contracts, MMIO visibility, authentication and the standalone
+dependency lock are unchanged. Current SDK selection is performed by Vanllia's
+existing Cargo overlay, as for other migrated providers. This avoids inventing
+a second platform supply owner or splitting historical transitive ABI types by
+updating only one direct facade dependency.
+
+`tests/unit-document` is a new isolated host workspace. It checks the public
+Unit document against the retained Rust declaration, passes that policy through
+the binary record and native runtime reader, and preserves full-width u64
+marks. It does not move an old test or guest scene. The intake uses installed
+nightly-2026-10-09 alongside Vanllia; no hardware or DMA evidence is inferred
+from these host checks or successful RV64 compilation. The original source,
+history and license boundary above remain intact.
+
+`tests/inspection` is a new minimal Rust probe for the public read-only
+inspection protocol and native Unit lifecycle. It is not copied from a legacy
+scene. Its QEMU acceptance is kept separate from hardware, BAR, MASTER and DMA
+behavior; see its README and the intake validation receipt.
