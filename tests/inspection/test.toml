@@ -1,0 +1,5 @@
+schema = 1
+name = "pci.inspection"
+unit = "test.pci-inspection"
+expected = "clean"
+timeout = 60

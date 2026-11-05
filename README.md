@@ -1,4 +1,69 @@
-# pci
+# PCI Driver
+
+PCI now owns its standalone runtime: bounded ECAM enumeration, read-only
+configuration snapshots, authenticated BAR placement/grants and MEMORY/MASTER
+effects in its own Task/Space. Package `pci-server` builds bin `pci`; the loader
+image identity remains `pci`. `pci_declaration::BUILD` is the single coordinate
+for `server/Cargo.toml`, package `pci-server`, bin `pci`.
+
+`unit.toml` is the current Vanllia runtime declaration. It retains supervisor
+execution, ordered effect/config capabilities, Hub startup and retirement
+dependencies, and the two exact System-supplied ECAM/aperture bindings. System
+completes Operator/Identity bootstrap before starting the ordinary Unit closure.
+Select `pci` through Vanllia; the minimal closure is System, Hub and PCI.
+
+Vanllia's selected-source Cargo overlay supplies the current Env/Wire/Mold/Unit
+SDK together, matching the already migrated providers. Standalone manifests and
+their formal lock retain the published historical dependency identities; changing
+one facade alone would split its transitive ABI types. The runtime's existing
+`main` and `serve()` entries need no additional wrapper or platform provider.
+
+The existing Place/Enable/Disable/Release protocol and PROGRAM are unchanged.
+`pci_api::inspection::{Call, Scan, Page, ENTRY, ENTRY_PATH, BACK}` publishes the
+frozen read-only protocol (Scan: 12 encoded bytes in a 16-byte buffer; Page:
+265 bytes). Actual scanning/MMIO stays in `server/`, never in the API crate.
+
+Runtime implementation modules are private; `pci_server::serve()` is the only
+library entry. Raw MMIO constructors and scanner/state types are not exposed to
+external safe callers.
+
+The server reuses `driver-shared::context` at
+`bb3427e179e87b640e0d51115a44544fae231252`; only missing platform-window intake
+and trusted System-state lookup are private adapters. PCI has no IOMMU
+implementation dependency. Placement opens MEMORY only; MASTER remains a
+separate authenticated action. Frozen generation floors, exact BAR roots,
+partial-failure retention and disable-before-release rules are preserved.
+
+## Current build and interface checks
+
+```sh
+cargo build --locked --offline -p pci-server --bin pci --target riscv64gc-unknown-none-elf --release
+cargo test --locked --offline -p pci-api --tests --target x86_64-unknown-linux-gnu
+cargo test --locked --offline -p pci-server --lib --target x86_64-unknown-linux-gnu
+cargo test --locked --offline --manifest-path tests/unit-document/Cargo.toml --target x86_64-unknown-linux-gnu
+```
+
+The original runtime checks used nightly-2026-09-04; the Unit intake is also
+checked with Vanllia's nightly-2026-10-09. Prepare public dependency caches first.
+The guest linker script is applied only to freestanding targets. Host checks
+exercise wire/data and bounded configuration access, not the guest binary or
+real hardware. The isolated Unit tests check TOML policy against the retained
+Rust declaration, binary record/runtime conversion, and full-width marks. No old
+test suite or guest scene is ported. These host/build checks do not establish
+hardware/DMA/retirement runtime acceptance.
+
+The new native [`pci.inspection` smoke test](tests/inspection/README.md) selects
+System, Hub, PCI and a transient probe. Through Vanllia it checks public
+read-only configuration and native cleanup on QEMU; it is separate from the
+host checks and exercises no BAR, MASTER or DMA effects.
+
+Runtime source is frozen sqware commit
+`94e114614bec53424ac55e640fc80cf19a3e7107`; see the appended runtime section in
+[PROVENANCE.md](PROVENANCE.md). The original API snapshot remains recorded
+below and in Git history. No source license grant is invented, no firmware is
+copied, and no old source data or repository is deleted or archived.
+
+## Original API snapshot (historical)
 
 Contract-only snapshot of the Shuyra PCI declarations and public protocol, plus
 the three existing pure protocol tests.

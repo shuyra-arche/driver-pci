@@ -1,0 +1,11 @@
+schema = 1
+id = "test.pci-inspection"
+
+[loader]
+image = "test-pci-inspection"
+
+[control]
+creation = "startup"
+requires = ["pci"]
+after = ["pci"]
+ending = "transient"

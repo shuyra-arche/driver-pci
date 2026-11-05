@@ -96,3 +96,131 @@ lines, working directories, exit codes, logs, metadata audits, the old-to-new
 hash map, and the final manifest. At worker handoff no commit, push, publication,
 or public full SHA existed. Root publishes after independent review; this
 snapshot does not establish Kernel independence or Stage 3/4 completion.
+
+
+## Runtime migration from the final legacy baseline
+
+The earlier API snapshot, authors and hash tables above are retained unchanged.
+The runtime source is `anreonyr/sqware` commit
+`94e114614bec53424ac55e640fc80cf19a3e7107`. That source already consumes the
+published PCI contract at this provider's `6e3ca09…` checkpoint; this change
+does not replace its PROGRAM or existing Place/Toggle/Wire messages.
+
+`pci-server` owns bin `pci` and the former runtime body. Image identity remains
+`pci`; declaration::BUILD adds one concrete owner build coordinate. The public
+inspection wire types/constants move to pci_api::inspection; enumeration/MMIO
+stay server-owned. The entry uses mold::entry and execution::boot::Report directly.
+No programs package or sqware source dependency remains.
+
+Standalone library visibility is deliberately narrower than the old aggregate:
+all MMIO/scanner/state modules are private, with only pci_server::serve() exposed
+for its binary. Safe arbitrary-base ECAM construction is not a public API.
+
+Ordinary runtime bodies and safety rules are preserved. Changes are crate
+imports, debug/READY paths, builtin ::core disambiguation, and the owner entry
+and linker envelope. The guest linker script is applied only to target_os=none;
+applying it to a host test executable was detected and corrected during checks.
+Existing driver-shared::context is reused at Driver
+`bb3427e179e87b640e0d51115a44544fae231252`. Private platform intake retains
+sire/supply/mark/permission checks; private lookup retains trusted System-owner
+checks and failed-token reclamation, dropping only the unused peer operation.
+
+### Runtime source map
+
+Source paths are relative to the frozen repository; blob ids identify original
+bytes. Full source/destination SHA-256 evidence is retained in the execution
+workspace. Headers are preserved; namespace adaptations are recorded above.
+
+| Source | Owner path | Original Git blob | Byte-identical |
+|---|---|---|---|
+| `programs/src/driver/pci/bar.rs` | `server/src/bar.rs` | `c8ac7cff06b1f6342c729454bc7ca5aa7959ae74` | yes |
+| `programs/src/driver/pci/core.rs` | `server/src/core.rs` | `aa7cd5d210e1bb36d26ee24d32447120c6a2dedc` | adapted |
+| `programs/src/driver/pci/ecam.rs` | `server/src/ecam.rs` | `a7e342c35beda2c1147a9893602d745cfe001ef7` | yes |
+| `programs/src/driver/pci/end.rs` | `server/src/end.rs` | `3c7a632d6369c369b9c9289fa821c424d7fe8b40` | yes |
+| `programs/src/driver/pci/endpoint.rs` | `server/src/endpoint.rs` | `9b91c5df95c50d761c9e405d8fdbd0a1ea2ee9c8` | yes |
+| `programs/src/driver/pci/function.rs` | `server/src/function.rs` | `02f7de00f8f27f9d0d5640ee5e14531cf683a439` | yes |
+| `programs/src/driver/pci/function_state.rs` | `server/src/function_state.rs` | `65f8b80edd0a279c2e39790799f18186b5bff7f2` | yes |
+| `programs/src/driver/pci/page.rs` | `server/src/page.rs` | `f7ca3557b001f13bc21e01800ca9decdad31be58` | yes |
+| `programs/src/driver/pci/place_request.rs` | `server/src/place_request.rs` | `a778f364ffc23ba7969d4634c438a7ebd55f831b` | yes |
+| `programs/src/driver/pci/placement.rs` | `server/src/placement.rs` | `c07927ec4fded2b51b3fc5f911facd0ce2ca3eaf` | yes |
+| `programs/src/driver/pci/reader.rs` | `server/src/reader.rs` | `ca8a6dad1873953382faaf9b1c2d94eb80be1856` | yes |
+| `programs/src/driver/pci/scan.rs` | `server/src/scan.rs` | `cfcfe14f0cb557446c671d788ef520ba5972edec` | yes |
+| `programs/src/driver/pci/serve.rs` | `server/src/serve.rs` | `7c26e3e81beb0495d3f259dc51eceef69586e0a1` | adapted |
+| `programs/src/driver/pci/snapshot.rs` | `server/src/snapshot.rs` | `92f5ad99ca040eb2f41bf3a3032b4908d7f971fb` | yes |
+| `programs/src/driver/pci/window.rs` | `server/src/window.rs` | `209120cfe559feb69d68cee65d8f9eab58e6697f` | adapted |
+| `programs/src/driver/pci/inspection/call.rs` | `api/src/inspection/call.rs` | `e1fc651ac4a8c4cb06cfc3ff3efab204f3660ff6` | yes |
+| `programs/src/driver/pci/inspection/page.rs` | `api/src/inspection/page.rs` | `9ee35feb7982e4b30dedf2459e94b9429ec8215f` | yes |
+| `programs/src/driver/pci/inspection/scan.rs` | `api/src/inspection/scan.rs` | `59ee042fe19c153dc0a5ae9f1496c9a060e63193` | yes |
+| `programs/src/driver/pci/inspection/enumerate.rs` | `server/src/inspection/enumerate.rs` | `eed136d2275aedfc4f4a0f822cced90b9e4b5796` | yes |
+| `programs/src/driver/shared/platform.rs` | `server/src/platform.rs` | `677715db1ff465101c38bd7cb5865a62ebc8464d` | adapted |
+| `programs/src/driver/shared/lookup.rs` | `server/src/lookup.rs` | `1e994c00c2c19fdef1fcc109ce5d379dde70c973` | adapted |
+| `programs/src/driver/pci/main.rs` | `server/src/main.rs` | `d9410923f3bc1495567617445f5579476e6a784a` | adapted |
+| `programs/src/driver/pci/mod.rs` | `server/src/lib.rs` | `ce9b378faa877f64ce7de83878278ce9cff8bf74` | adapted |
+
+### Original runtime history
+
+The original 17 PCI-history commits remain in sqware. Their full identifiers,
+author dates, identities and subjects are retained here; this is not a claim
+that unrelated whole-repository ancestry was imported. The existing provider
+snapshot remains the parent and is not rewritten.
+
+- `672d8d2deafc8067c94b6af340a5f89c6a765c9c` — 2026-10-29T22:46:41+08:00; anreonyr <anreonyr@gmail.com>; Consume published PCI and IOMMU contracts
+- `5dcab0b93a40d3194213eca0754534006a48cca7` — 2026-10-27T18:30:26+08:00; anreonyr <anreonyr@gmail.com>; Package IOMMU and PCI protocols for Kernel consumers
+- `a1891de648de5e842507ce9684481228b642ba65` — 2026-10-26T09:49:27+08:00; anreonyr <anreonyr@gmail.com>; Consume published Unit declarations and finish guard test ownership transfer
+- `a6c6824ef91ac487919d87374a71b62174d465bd` — 2026-10-26T09:18:51+08:00; anreonyr <anreonyr@gmail.com>; Consume published System API and move its pure tests and shape contracts
+- `e6302af2156a6fe3766d3ccc22f080a481948bf3` — 2026-10-26T08:44:38+08:00; anreonyr <anreonyr@gmail.com>; Consume published env ABI and migrate its owned contract tests
+- `2c17c3877e3f8c67d9db5634d693fa4303d47f8c` — 2026-10-26T01:13:52+08:00; anreonyr <anreonyr@gmail.com>; Separate Unit declarations, runtime composition and image building
+- `5d2f3de6a3dfd5da762c52148500072c04c4b4a8` — 2026-10-25T00:28:29+08:00; anreonyr <anreonyr@gmail.com>; Advance device bindings independently and retain exact BAR roots
+- `0db30aae92fcd64f9c98cd5b04d5961ef1c83b51` — 2026-10-24T13:14:05+08:00; anreonyr <anreonyr@gmail.com>; Move hardware coordination into the device Driver and qualify device identity
+- `baae98467028d7ad5f27c81f922e19833c7b2f28` — 2026-10-24T01:10:21+08:00; anreonyr <anreonyr@gmail.com>; Add bounded PCI scan and read-only configuration primitives
+- `933793e0ef5d5b50f4b576e0d0c894e0f45a0497` — 2026-10-23T17:47:23+08:00; anreonyr <anreonyr@gmail.com>; Add scoped Control supervision and conditional recovery lifecycle
+- `dd12da150ea583c613769dfda455c1b4afc0d9f4` — 2026-10-21T20:34:47+08:00; anreonyr <anreonyr@gmail.com>; Declare and poll generic retirement dependencies
+- `852f1cf5b9f0c264555eb9956701dc8f5fb59340` — 2026-10-21T20:23:53+08:00; anreonyr <anreonyr@gmail.com>; Migrate driver windows to local derivation and retire AccordWindow
+- `0117e51376d7790fd074b92214f6f796d99fd151` — 2026-10-21T03:08:56+08:00; anreonyr <anreonyr@gmail.com>; Move DMA recovery into resident driver domains
+- `6dc7325a40a9c7d748a8de9d9a29d8462f48e13c` — 2026-10-17T18:52:15+08:00; anreonyr <anreonyr@gmail.com>; fix(device): make the released line carry the stop evidence it claims
+- `dcbc53790f2c698a142d67076bb19c1a658bc6da` — 2026-10-17T18:38:28+08:00; anreonyr <anreonyr@gmail.com>; fix(platform): confirm the endpoint reset instead of calling a bus-master clear a drain
+- `aa09d21c4c4261d33ec95d112849a8f6ba8b7738` — 2026-10-17T18:03:31+08:00; anreonyr <anreonyr@gmail.com>; fix(iommu): give every fence its own completion and stop by revoking access first
+- `f97528c34409e9d1219553ae1c757a9c2086cbfe` — 2026-10-17T09:35:44Z; anreonyr <anreonyr@users.noreply.github.com>; refactor(driver): move the IOMMU and PCI mechanisms out of the probes
+### Notices and validation boundary
+
+The final source baseline also has no tracked root LICENSE/COPYING/NOTICE.
+No license or permission grant is invented. No firmware/vendor binary or new
+third-party source is copied; public SDK dependencies remain separate packages
+with their existing notices. The original repository and local source data
+are preserved.
+
+The existing three API tests remain unchanged. Two owner-specific inspection
+checks validate exact wire roundtrip/malformed bounds; three small library
+checks validate bounded pagination, exact snapshots and partial ECAM tails.
+They are new focused checks, not a port of the old suite or scenes. RV64 release
+compilation and host checks do not prove hardware effects, DMA/retirement
+behavior, or integration into a product. No QEMU/SMP, merge or archive is claimed.
+
+## Vanllia Unit intake
+
+The existing runtime checkpoint `bc0da12a1bafbf684179301853b5709a1ddfeaf9`
+remains the starting point. This follow-up adds the provider-owned `unit.toml`
+for Vanllia's dynamic Unit catalog. The document retains PROGRAM's supervisor
+loader, ordered `entry`/`config` namespace capabilities, READY mark, resident
+ending, Hub retirement receipt and exact ECAM/aperture supply bindings.
+Operator/Identity bootstrap dependencies are completed inside System; the
+ordinary Unit closure explicitly requires and orders Hub.
+
+Runtime, wire contracts, MMIO visibility, authentication and the standalone
+dependency lock are unchanged. Current SDK selection is performed by Vanllia's
+existing Cargo overlay, as for other migrated providers. This avoids inventing
+a second platform supply owner or splitting historical transitive ABI types by
+updating only one direct facade dependency.
+
+`tests/unit-document` is a new isolated host workspace. It checks the public
+Unit document against the retained Rust declaration, passes that policy through
+the binary record and native runtime reader, and preserves full-width u64
+marks. It does not move an old test or guest scene. The intake uses installed
+nightly-2026-10-09 alongside Vanllia; no hardware or DMA evidence is inferred
+from these host checks or successful RV64 compilation. The original source,
+history and license boundary above remain intact.
+
+`tests/inspection` is a new minimal Rust probe for the public read-only
+inspection protocol and native Unit lifecycle. It is not copied from a legacy
+scene. Its QEMU acceptance is kept separate from hardware, BAR, MASTER and DMA
+behavior; see its README and the intake validation receipt.
