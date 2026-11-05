@@ -11,6 +11,7 @@ mod place;
 mod said;
 mod toggle;
 mod wire;
+pub mod inspection;
 
 pub use call::Call;
 pub use fail::{
