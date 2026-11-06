@@ -1,2 +1,0 @@
-# Preserve captured UART CRLF bytes and their recorded digest.
-docs/pci-inspection-serial.log -text whitespace=cr-at-eol
